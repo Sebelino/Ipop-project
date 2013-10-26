@@ -1,0 +1,22 @@
+#########################
+#  Welcome to our Bank  #
+#########################
+(1) Balance
+(2) Withdrawal
+(3) Deposit
+(4) Language
+(5) Exit
+Current balance is
+dollars.
+Enter amount:
+Enter one-time code:
+Error: Invalid one-time code!
+Enter account no.:
+Enter password:
+Error: Invalid account number or password!
+Choose language:
+Error: Invalid language!
+(1) English
+(2) Swedish
+Error: Invalid option!
+Good Bye!

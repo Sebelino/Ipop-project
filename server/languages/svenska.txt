@@ -1,0 +1,22 @@
+#########################
+# Valkommen till Banken #
+#########################
+(1) Saldo
+(2) Uttag
+(3) Insattning
+(4) Sprak
+(5) Avsluta
+Ditt nuvarande saldo ar
+dollar.
+Skriv in belopp:
+Skriv in engangskod:
+Error: Ogiltig engangskod!
+Skriv in kontonummer:
+Skriv in lasenord:
+Error: Ogiltigt kontonummer eller losenord!
+Valj sprak:
+Error: Ogiltigt sprak!
+(1) Engelska
+(2) Svenska
+Error: Ogiltigt alternativ!
+Hej da!
