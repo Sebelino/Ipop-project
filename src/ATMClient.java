@@ -198,6 +198,7 @@ public class ATMClient{
         out.close();
         in.close();
         ATMSocket.close();
+        System.out.println("Client signing out.");
     }
 
     /**

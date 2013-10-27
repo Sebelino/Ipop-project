@@ -12,7 +12,7 @@ public class ATMServer {
 
     //private static Map<String,ATMServerThread> connections;
     //private static List<ATMServerThread> connections;
-    private static BannerThread gamingThread;
+    private static MasterThread gamingThread;
 
     public static void main(String[] args) throws IOException {
         System.err.println("entering main");
@@ -30,13 +30,13 @@ public class ATMServer {
 	
         if(bannerThreadOn){
             System.err.println("creating banner thread");
-            gamingThread = new BannerThread();
+            gamingThread = new MasterThread();
             gamingThread.start();
             bannerThreadOn = false;
         }
         System.out.println("Game server started listening on port: " + connectionPort);
         while(listening){
-            System.err.println("im listening");
+            System.out.println("im listening");
             ATMServerThread connection = new ATMServerThread(serverSocket.accept());
             gamingThread.addConnection(connection);
             //connection.start();
