@@ -125,7 +125,6 @@ public class ATMClient{
     }
 
     public static void main(String[] args) throws IOException {
-        
         Socket ATMSocket = null;
         PrintWriter out = null;
         BufferedReader in = null;
@@ -151,7 +150,7 @@ public class ATMClient{
             System.exit(1);
         }
 
-        System.out.println("Contacting bank ... ");
+        System.out.println("Contacting game server ... ");
         Scanner scanner = new Scanner(System.in);
         printLogin(in,out,scanner);
 
