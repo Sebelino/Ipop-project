@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author Sebastian Olsson
  * @version 2013-10-28
  */
-public class ATMClient{
+public class Client{
     private static int connectionPort = 8989;
     private static PrintWriter out;
     private static BufferedReader in;

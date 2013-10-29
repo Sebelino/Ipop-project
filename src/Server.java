@@ -5,13 +5,10 @@ import java.util.*;
 /**
    @author Viebrapadata
 */
-public class ATMServer {
+public class Server {
 
     private static int connectionPort = 8989;
-    private static boolean bannerThreadOn = true;
 
-    //private static Map<String,ATMServerThread> connections;
-    //private static List<ATMServerThread> connections;
     private static MasterThread gamingThread;
 
     public static void main(String[] args) throws IOException {
@@ -28,16 +25,14 @@ public class ATMServer {
             System.exit(1);
         }
 	
-        if(bannerThreadOn){
-            System.err.println("creating banner thread");
-            gamingThread = new MasterThread();
-            gamingThread.start();
-            bannerThreadOn = false;
-        }
+        System.err.println("Creating master thread.");
+        gamingThread = new MasterThread();
+        gamingThread.start();
+
         System.out.println("Game server started listening on port: " + connectionPort);
         while(listening){
             System.out.println("im listening");
-            ATMServerThread connection = new ATMServerThread(serverSocket.accept());
+            ServerThread connection = new ServerThread(serverSocket.accept());
             gamingThread.addConnection(connection);
             //connection.start();
             System.err.println("Client thread created.");
