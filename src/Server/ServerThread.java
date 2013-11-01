@@ -9,6 +9,7 @@ import java.util.*;
 public class ServerThread extends Thread {
     public String clientName;
     private Queue<String> requests;
+    private Queue<String> responses;
 
     public Socket socket = null;
     private BufferedReader in;
@@ -23,7 +24,8 @@ public class ServerThread extends Thread {
         //Thread thread = new Thread(){
         //    public void run(){
         //        try{
-        //            while(){
+        //            while(responses.isEmpty()){
+        //                System.out.println("yo")
         //            }
         //        }catch(InterruptedException e){
         //            e.printStackTrace();
@@ -41,23 +43,23 @@ public class ServerThread extends Thread {
             in = new BufferedReader
                 (new InputStreamReader(socket.getInputStream()));
 
-            send("entername");
-            printComm("send","entername");
+            sendReg("entername");
+            printComm("sendReg","entername");
             while(clientName.isEmpty()){
                 String name = null;
                 try{
-                    name = receive();
+                    name = receiveReg();
                 }catch(NullPointerException e){
-                    printComm("receive",null);
+                    printComm("receiveReg",null);
                     System.err.println("The client sent a null pointer for the name. "+
                             "Probably because it disconnected.");
                     return;
                 }
                 if(name.equals("-")){
-                    printComm("receive","-");
-                    printComm("send","error Your name cannot consist of just a hyphen.");
+                    printComm("receiveReg","-");
+                    printComm("sendReg","error Your name cannot consist of just a hyphen.");
                 }else if(name.isEmpty()){
-                    printComm("receive","");
+                    printComm("receiveReg","");
                     continue;
                 }else{
                     String christenRequest = "setname "+name;
@@ -65,17 +67,17 @@ public class ServerThread extends Thread {
                     putToSleep();
                 }
             }
-            send("ok"); // ACK the name.
-            printComm("send","ok");
+            sendReg("ok"); // ACK the name.
+            printComm("sendReg","ok");
             boolean requestsExit = false;
             while(!requestsExit){
-                String command = receive();
+                String command = receiveReg();
                 String[] tokens = command.split("\\s+");
                 if(command.isEmpty()){ // Received whitespace.
-                    printComm("receive","");
+                    printComm("receiveReg","");
                     continue;
                 }else if(command.equals("exit")){
-                    printComm("receive","exit");
+                    printComm("receiveReg","exit");
                     return;
                 }else if(command.equals("list")){
                     requests.add(command);
@@ -87,9 +89,15 @@ public class ServerThread extends Thread {
                     requests.add(command);
                     putToSleep();
                 }else{
-                    throw new IllegalArgumentException("Request from client was not recognized.");
+                    throw new ProtocolException("Request from client was not recognized.");
                 }
             }
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch(ProtocolException e){
+            e.printStackTrace();
+        }
+        try{
             out.close();
             in.close();
             socket.close();
@@ -100,7 +108,7 @@ public class ServerThread extends Thread {
     }
 
     public void printComm(String direction,String msg){
-        if(!direction.equals("send") && !direction.equals("receive")){
+        if(!direction.equals("sendReg") && !direction.equals("receiveReg")){
             throw new IllegalArgumentException("Internal printing method screwed up.");
         }
         if(msg == null){
@@ -131,7 +139,33 @@ public class ServerThread extends Thread {
     }
 
     /**
+     * Sends a packet to the client, including a prepended token "reg".
+     */
+    public void sendReg(String text){
+        send("reg "+text);
+    }
+
+    /**
      * Receives a packet from the client.
+     * @return The content except for the first token "reg".
+     * @throws ProtocolException if the message does not start with "reg".
+     */
+    public String receiveReg() throws ProtocolException,IOException{
+        String input = receive();
+        String[] tokens = input.split("\\s+");
+        if(!tokens[0].equals("reg")){
+            throw new ProtocolException("Client missed to prepend the string with reg/irr.");
+        }
+        String output = "";
+        for(int i = 0;i < tokens.length;i++){
+            output += tokens[i];
+        }
+        return output.trim();
+    }
+
+    /**
+     * Receives a packet from the client.
+     * @return The contents, trimmed.
      */
     public String receive() throws IOException{
         return in.readLine().trim();

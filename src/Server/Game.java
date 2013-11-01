@@ -23,12 +23,12 @@ public class Game{
         hostersTurn = true;
     }
 
-    public void makeMove(String playerName,String move) throws GameException{
+    public void makeMove(String playerName,String move) throws ProtocolException{
         if(playerName.equals(hoster.clientName)){
             if(hostersTurn){
                 state++;
             }else{
-                throw new GameException("It is not your turn.");
+                throw new ProtocolException("It is not your turn.");
             }
         }else if(playerName.equals(joiner.clientName)){
         }else{

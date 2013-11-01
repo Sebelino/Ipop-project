@@ -346,7 +346,7 @@ public class ClientSender {
             //prompt user to enter name:
             System.out.print("Enter name: ");
             name = scanner.nextLine();
-        	out.println(name.replace("\\","\\\\"));
+        	out.println("reg "+name.replace("\\","\\\\"));
         	
         	serverresponse = in.readLine().trim().toLowerCase();
         	String[] tokens = serverresponse.split(" ");
