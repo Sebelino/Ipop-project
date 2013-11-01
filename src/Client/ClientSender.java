@@ -226,17 +226,14 @@ public class ClientSender {
 			s.println("Cannot make moves outside of games!");
 		} else if(state != Session.STATE_DISCONNECTED){
 			String[] tokens = input.split(" ");
-			if(tokens.length != 3) {
-				s.println("This is not how you make moves, see help.");
-			} else {
-				String startMove = mapPos(tokens[1]);
-				String endMove = mapPos(tokens[2]); 
-				s.setWaiting(true);
-				send("move " + startMove + " " + endMove);
-				s.setWaitingFor(Session.WAIT_MOVE);
-				waitForResponse();
+			StringBuilder sb = new StringBuilder();
+			for(int i = 2; i < tokens.length;i++) {
+				sb.append(mapPos(tokens[i]) + " ");
 			}
-
+			s.setWaiting(true);
+			send("move " + sb.toString());
+			s.setWaitingFor(Session.WAIT_MOVE);
+			waitForResponse();
 		}
 	}
 	
@@ -313,10 +310,9 @@ public class ClientSender {
         
         try {
             adress = args[0];
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Using localhost.");
-            adress = "127.0.0.1";
+        } catch (ArrayIndexOutOfBoundsException e) {
+        	System.err.println("Using localhost.");
+        	adress = "127.0.0.1";
         }
         try {
             chSocket = new Socket(adress, connectionPort); 
