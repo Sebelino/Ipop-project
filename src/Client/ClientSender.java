@@ -274,7 +274,7 @@ public class ClientSender {
 	public void run() {
 		String input;
 		while(s.getCurrentState() != Session.STATE_DISCONNECTED) {
-            input = prompt();
+            input = prompt().trim().toLowerCase();
 			
 			if(s.getCurrentState() == Session.STATE_DISCONNECTED) {
 				//random disconnect while waiting for user input
@@ -282,9 +282,8 @@ public class ClientSender {
 				break;
 			}
 			
-			input = input.trim().toLowerCase();
-			String[] tokens = input.split(" ");
-			String command = aliases.get(tokens[0]);
+			String[] tokens = input.split("\\s+");
+			String command = tokens[0];
 			if(!command.equals("")) {
 				String parsedCommand = aliases.get(command);
 				if(parsedCommand == null) { //unknown command

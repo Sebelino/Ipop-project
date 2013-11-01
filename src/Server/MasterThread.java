@@ -40,7 +40,7 @@ public class MasterThread extends Thread {
                 clientCount = connections.size();
                 System.out.println("There are currently "+clientCount+" clients connected.");
             }
-            int millisecondDelay = 250;
+            int millisecondDelay = 50;
             try{Thread.sleep(millisecondDelay);}catch(InterruptedException e){}
         }
     }
