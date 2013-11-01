@@ -15,6 +15,7 @@ public class MasterThread extends Thread {
      */
     public MasterThread() {
         connections = new HashSet<ServerThread>();
+        games = new HashSet<Game>();
     }
 
     /**
@@ -53,8 +54,8 @@ public class MasterThread extends Thread {
         if(tokens.length == 1){
             if(tokens[0].equals("list")){
                 String listResponse = listResponse();
-                conn.send(listResponse);
-                conn.printComm("send",listResponse);
+                conn.sendReg(listResponse);
+                conn.printComm("sendReg",listResponse);
             }
         }else if(tokens.length == 2){
             if(tokens[0].equals("setname")){
@@ -62,22 +63,20 @@ public class MasterThread extends Thread {
                 if(playerNameIsAvailable(proposedName)){
                     conn.clientName = proposedName;
                 }else{
-                    conn.send("error That name is unavailable.");
-                    conn.printComm("send","error That name is unavailable.");
+                    conn.sendReg("error That name is unavailable.");
+                    conn.printComm("sendReg","error That name is unavailable.");
                 }
-                wake(conn);
             }else if(tokens[0].equals("host")){
                 String proposedName = tokens[1];
                 if(gameNameIsAvailable(proposedName)){
                     Game game = new Game(proposedName,conn);
                     games.add(game);
-                    conn.send("ok");
-                    conn.printComm("send","ok");
+                    conn.sendReg("ok");
+                    conn.printComm("sendReg","ok");
                 }else{
-                    conn.send("error That name is unavailable.");
-                    conn.printComm("send","error That name is unavailable.");
+                    conn.sendReg("error That name is unavailable.");
+                    conn.printComm("sendReg","error That name is unavailable.");
                 }
-                wake(conn);
             }else if(tokens[0].equals("join")){
                 String proposedName = tokens[1];
                 if(gameNameIsAvailable(proposedName)){
@@ -89,24 +88,24 @@ public class MasterThread extends Thread {
                         }
                     }
                     if(joinedGame == null){ // There was no game with the name that the client mentions.
-                        conn.send("error There is no game with that name.");
-                        conn.printComm("send","error There is no game with that name.");
+                        conn.sendReg("error There is no game with that name.");
+                        conn.printComm("sendReg","error There is no game with that name.");
                     }else{
                         joinedGame.join(conn);
-                        conn.send("ok");
-                        conn.printComm("send","ok");
+                        conn.sendReg("ok");
+                        conn.printComm("sendReg","ok");
                     }
                 }else{
-                    conn.send("error That name is unavailable.");
-                    conn.printComm("send","error That name is unavailable.");
+                    conn.sendReg("error That name is unavailable.");
+                    conn.printComm("sendReg","error That name is unavailable.");
                 }
-                wake(conn);
             }else{
                 throw new IllegalArgumentException("Request to master thread was not recognized.");
             }
         }else{
             System.err.println("Could not parse request!");
         }
+        wake(conn);
         System.out.println("exiting processReq");
     }
 

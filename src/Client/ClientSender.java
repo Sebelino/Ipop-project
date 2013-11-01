@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class ClientSender {
 	private static int connectionPort = 8989;
+	private Scanner scanner;
 	private HashMap<String,String> aliases;
 	private HashMap<String,String> poses;
 	
@@ -17,7 +18,7 @@ public class ClientSender {
 	Session s;
 	PrintWriter out;
 	
-	public ClientSender(PrintWriter out, Session session) {
+	public ClientSender(PrintWriter out,Scanner scanner,Session session) {
 		s = session;
 		this.out = out;
 		//initialize the aliases map
@@ -78,6 +79,8 @@ public class ClientSender {
 		poses.put("c1","30");
 		poses.put("e1","31");
 		poses.put("g1","32");
+        
+        this.scanner = scanner;
 	}
 	
 	/*
@@ -241,7 +244,14 @@ public class ClientSender {
 	 * Wait until the receiver confirms we got a response from server
 	 */
 	private void waitForResponse() {
-		while(s.getWaiting()) {}
+        int millisecondDelay = 50;
+		while(s.getWaiting()) {
+            try{
+                Thread.sleep(millisecondDelay);
+            }catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
 	}
 	
 	public String mapPos(String pos) {
@@ -254,12 +264,17 @@ public class ClientSender {
 	private void send(String msg) {
 		out.println(msg);
 	}
-	
+
+    private String prompt(){	
+        System.out.print("> ");
+        String input = scanner.nextLine();
+        return input;
+    }
+
 	public void run() {
-		Scanner sc = new Scanner(System.in);
 		String input;
 		while(s.getCurrentState() != Session.STATE_DISCONNECTED) {
-			input = sc.nextLine();
+            input = prompt();
 			
 			if(s.getCurrentState() == Session.STATE_DISCONNECTED) {
 				//random disconnect while waiting for user input
@@ -338,7 +353,6 @@ public class ClientSender {
         while(!gotname) {
         	String serverresponse = in.readLine(); //should be "entername" but we dont care
         	
-        	
             //prompt user to enter name:
             System.out.print("Enter name: ");
             name = scanner.nextLine();
@@ -360,16 +374,13 @@ public class ClientSender {
         	
         }
         
-        scanner.close();
-
-        
         //now that the name has been set
         Session s = new Session(name);
         
         ClientReceiver cr = new ClientReceiver(in,s);
-        ClientSender cs = new ClientSender(out,s);
+        ClientSender cs = new ClientSender(out,scanner,s);
         
-        s.println("Welcome to the lobby! Type list to see a list of games!");
+        s.println("Welcome to the lobby! Type \"list\" to see a list of games!");
         cr.start(); //important to start this one first as it is a new thread!
         
         cs.run();//the current main thread will become the client receiver

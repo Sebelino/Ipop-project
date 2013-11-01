@@ -12,8 +12,6 @@ public class Server {
     private static MasterThread gamingThread;
 
     public static void main(String[] args) throws IOException {
-        System.err.println("entering main");
-        
         ServerSocket serverSocket = null;
        
         boolean listening = true;

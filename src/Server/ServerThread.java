@@ -21,7 +21,7 @@ public class ServerThread extends Thread {
         clientName = "";
         requests = new LinkedList<String>();
 
-        //Thread thread = new Thread(){
+        //Thread thread = new Thread(){ //BEHÖVS INTE; gör bara send från mastertråden
         //    public void run(){
         //        try{
         //            while(responses.isEmpty()){
@@ -48,18 +48,18 @@ public class ServerThread extends Thread {
             while(clientName.isEmpty()){
                 String name = null;
                 try{
-                    name = receiveReg();
+                    name = receive();
                 }catch(NullPointerException e){
-                    printComm("receiveReg",null);
+                    printComm("receive",null);
                     System.err.println("The client sent a null pointer for the name. "+
                             "Probably because it disconnected.");
                     return;
                 }
                 if(name.equals("-")){
-                    printComm("receiveReg","-");
+                    printComm("receive","-");
                     printComm("sendReg","error Your name cannot consist of just a hyphen.");
                 }else if(name.isEmpty()){
-                    printComm("receiveReg","");
+                    printComm("receive","");
                     continue;
                 }else{
                     String christenRequest = "setname "+name;
@@ -71,13 +71,13 @@ public class ServerThread extends Thread {
             printComm("sendReg","ok");
             boolean requestsExit = false;
             while(!requestsExit){
-                String command = receiveReg();
+                String command = receive();
                 String[] tokens = command.split("\\s+");
                 if(command.isEmpty()){ // Received whitespace.
-                    printComm("receiveReg","");
+                    printComm("receive","");
                     continue;
                 }else if(command.equals("exit")){
-                    printComm("receiveReg","exit");
+                    printComm("receive","exit");
                     return;
                 }else if(command.equals("list")){
                     requests.add(command);
@@ -108,7 +108,7 @@ public class ServerThread extends Thread {
     }
 
     public void printComm(String direction,String msg){
-        if(!direction.equals("sendReg") && !direction.equals("receiveReg")){
+        if(!direction.equals("sendReg") && !direction.equals("receive")){
             throw new IllegalArgumentException("Internal printing method screwed up.");
         }
         if(msg == null){
