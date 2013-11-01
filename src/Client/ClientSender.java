@@ -162,14 +162,14 @@ public class ClientSender {
 	private void quit() {
 		int state = s.getCurrentState();
 		if(state == Session.STATE_LOBBY) {
-			out.print("exit");
+			send("exit");
 			s.setCurrentState(Session.STATE_DISCONNECTED);
 		} else if(state == Session.STATE_DISCONNECTED) {
 			//do nothing
 		} else {
 			//in a game
 			s.setWaiting(true);
-			out.print("exit");
+			send("exit");
 			s.setWaitingFor(Session.WAIT_EXIT);
 			waitForResponse();
 		}
@@ -179,7 +179,7 @@ public class ClientSender {
 		int state = s.getCurrentState();
 		if(state == Session.STATE_LOBBY) {
 			s.setWaiting(true);
-			out.print("list");
+			send("list");
 			s.setWaitingFor(Session.WAIT_LIST);
 			waitForResponse();
 		} else {
@@ -192,7 +192,7 @@ public class ClientSender {
 		if(state == Session.STATE_LOBBY) {
 			s.println("Cannot chat outside of a game!");
 		} else if(state != Session.STATE_DISCONNECTED) {
-			out.print(input); //we are not waiting for a response here.
+			send(input); //we are not waiting for a response here.
 		}
 	}
 	
@@ -200,7 +200,7 @@ public class ClientSender {
 		int state = s.getCurrentState();
 		if(state == Session.STATE_LOBBY) {
 			s.setWaiting(true);
-			out.print(input);
+			send(input);
 			s.setWaitingFor(Session.WAIT_HOST);
 			waitForResponse();
 		} else {
@@ -212,7 +212,7 @@ public class ClientSender {
 		int state = s.getCurrentState();
 		if(state == Session.STATE_LOBBY) {
 			s.setWaiting(true);
-			out.print(input);
+			send(input);
 			s.setWaitingFor(Session.WAIT_JOIN);
 			waitForResponse();
 		} else {
@@ -232,7 +232,7 @@ public class ClientSender {
 				String startMove = mapPos(tokens[1]);
 				String endMove = mapPos(tokens[2]); 
 				s.setWaiting(true);
-				out.print("move " + startMove + " " + endMove);
+				send("move " + startMove + " " + endMove);
 				s.setWaitingFor(Session.WAIT_MOVE);
 				waitForResponse();
 			}
@@ -252,6 +252,10 @@ public class ClientSender {
 		if(ret == null)
 			ret = pos;
 		return ret;
+	}
+	
+	private void send(String msg) {
+		out.println(msg.replaceAll("\\", "\\\\"));
 	}
 	
 	public void run() {
@@ -342,7 +346,7 @@ public class ClientSender {
             //prompt user to enter name:
             System.out.print("Enter name: ");
             name = scanner.nextLine();
-        	out.print(name);
+        	out.println(name.replace("\\","\\\\"));
         	
         	serverresponse = in.readLine().trim().toLowerCase();
         	String[] tokens = serverresponse.split(" ");
