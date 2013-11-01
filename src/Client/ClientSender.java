@@ -252,7 +252,7 @@ public class ClientSender {
 	}
 	
 	private void send(String msg) {
-		out.println(msg.replaceAll("\\", "\\\\"));
+		out.println(msg);
 	}
 	
 	public void run() {
@@ -342,7 +342,7 @@ public class ClientSender {
             //prompt user to enter name:
             System.out.print("Enter name: ");
             name = scanner.nextLine();
-        	out.println(name.replace("\\","\\\\"));
+        	out.println(name);
         	
         	serverresponse = in.readLine().trim().toLowerCase();
         	String[] tokens = serverresponse.split(" ");
