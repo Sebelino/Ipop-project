@@ -303,15 +303,16 @@ public class ClientSender {
 	
     public static void main(String[] args) throws IOException {
 		Socket chSocket = null;
-        String adress = "";
+        String adress;
         PrintWriter out = null;
         BufferedReader in = null;
         
         try {
             adress = args[0];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Missing argument ip-adress");
-            System.exit(1);
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Using localhost.");
+            adress = "127.0.0.1";
         }
         try {
             chSocket = new Socket(adress, connectionPort); 
