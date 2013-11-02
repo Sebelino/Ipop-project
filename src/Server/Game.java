@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 /**
  * A game session. Contains information about the hosting player, joining player, and state of
  * the game.
@@ -9,8 +11,8 @@ public class Game{
     private final ServerThread hoster;
     private ServerThread joiner;
     public final String gameName;
-    private int state; // byt ut denna mot ett spelbräde eller nå't
-    private boolean hostersTurn;
+    private GameState state;
+    private boolean started;
 
     /**
      * Constructor.
@@ -19,20 +21,33 @@ public class Game{
         this.hoster = hoster;
         this.joiner = null;
         this.gameName = gameName;
-        state = 0;
-        hostersTurn = true;
+        started = false;
+        //state = new GameState();
     }
 
-    public void makeMove(String playerName,String move) throws ProtocolException{
-        if(playerName.equals(hoster.clientName)){
-            if(hostersTurn){
-                state++;
-            }else{
-                throw new ProtocolException("It is not your turn.");
-            }
-        }else if(playerName.equals(joiner.clientName)){
-        }else{
-            throw new IllegalArgumentException();
+	/*
+	 * Initialize the Game
+	 */
+	public void startGame() {
+		state = new GameState();
+		started = true;
+	}
+
+	public void makeMove(String playerName,String move) throws GameException{
+		//Most likely obsolete in the future
+		//makeMove(Constants.CELL_RED, 1, 3);
+	}
+	
+    public void makeMove(int player, Vector<Integer> poses) throws GameException{
+        if(state.getNextPlayer() == player) {
+        	//It is indeed this player's turn
+        	
+        	
+        	
+        	
+        } else {
+        	//Not this player's turn
+        	throw new GameException("It is not your turn.");
         }
     }
 

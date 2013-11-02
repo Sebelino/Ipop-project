@@ -99,6 +99,38 @@ public class MasterThread extends Thread {
                     conn.sendReg("error That name is unavailable.");
                     conn.printComm("sendReg","error That name is unavailable.");
                 }
+            }else if(tokens[0].equals("move")){
+                //TODO
+                
+                //Check if user is in a game. If no: do nothing.
+                //If yes, parse the parameters to an integer vector.
+                Vector<Integer> positions = new Vector<Integer>();
+                int player;
+                //player should be either 1 or 10 (Constants.CELL_RED or
+                //Constants.CELL_WHITE) depending on what player requested the move.
+                try {
+		            for (int i = 1;i<tokens.length;i++) {
+		            	positions.add(Integer.parseInt(tokens[i]));
+		            }
+                } catch (Exception e) {
+                	//Probably because the arguments were not valid integers.
+                	//Notify player somehow
+                }
+                
+                //Find the correct game and call:
+                //correctGame.makeMove(player, positions);
+                                
+            }else if(tokens[0].equals("chat")){
+                //TODO
+                
+                //Check if user is in a game .
+                //If yes, send the message to the correct opponent.
+                //If not in a game: do nothing for now.
+                //Might implement lobby chat in the future, though.
+                
+                
+                
+                
             }else{
                 throw new IllegalArgumentException("Request to master thread was not recognized.");
             }
