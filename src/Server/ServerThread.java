@@ -77,8 +77,10 @@ public class ServerThread extends Thread {
                     printComm("receive","");
                     continue;
                 }else if(command.equals("exit")){
-                    printComm("receive","exit");
-                    return;
+                    requests.add("exit");
+                    putToSleep();
+                    System.out.println("we are back!!!!!!!!!!");
+                    //return; //TODO
                 }else if(command.equals("list")){
                     requests.add(command);
                     putToSleep();

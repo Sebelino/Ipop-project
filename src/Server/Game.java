@@ -8,8 +8,8 @@ import java.util.Vector;
  * @version 2013-10-27
  */
 public class Game{
-    private final ServerThread hoster;
-    private ServerThread joiner;
+    public final ServerThread hoster;
+    public ServerThread joiner;
     public final String gameName;
     private GameState state;
     private boolean started;

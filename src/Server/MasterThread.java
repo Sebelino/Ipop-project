@@ -56,6 +56,8 @@ public class MasterThread extends Thread {
                 String listResponse = listResponse();
                 conn.sendReg(listResponse);
                 conn.printComm("sendReg",listResponse);
+            }else if(tokens[0].equals("exit")){
+                tryQuittingGame(conn.clientName);
             }
         }else if(tokens.length == 2){
             if(tokens[0].equals("setname")){
@@ -139,6 +141,27 @@ public class MasterThread extends Thread {
         }
         wake(conn);
         System.out.println("exiting processReq");
+    }
+
+    /**
+     * Make the player identified by the parameter quit a game, if s/he is part of one.
+     */
+    private void tryQuittingGame(String clientName){
+        Iterator<Game> it = games.iterator();
+        while(it.hasNext()){
+            Game game = it.next();
+            if(game.hosterName().equals(clientName)){
+                wake(game.hoster);
+                game.hoster.send("ok");
+                it.remove();
+                break;
+            }else if(game.joinerName().equals(clientName)){
+                it.remove();
+                game.joiner.send("ok");
+                wake(game.joiner);
+                break;
+            }
+        }
     }
 
     /**
