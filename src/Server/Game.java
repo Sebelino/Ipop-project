@@ -66,12 +66,11 @@ public class Game{
     }
 
     /**
-     * @return The name of the joining player.
-     * @throws RuntimeException if no one has joined yet.
+     * @return The name of the joining player, or "-" if no player has joined.
      */
     public String joinerName(){
         if(!hasJoined()){
-            throw new RuntimeException("No one has joined this game.");
+            return "-";
         }
         return joiner.clientName;
     }
