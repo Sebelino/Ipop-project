@@ -152,12 +152,22 @@ public class MasterThread extends Thread {
 				        
 				        if (res == 0) {
 				        	//Success!
-				        	conn.game.hoster.sendIrr(boardMessage);
-				        	conn.game.joiner.sendIrr(boardMessage);
+				        	if (player == Constants.CELL_RED) {
+						    	conn.game.hoster.sendReg(boardMessage);
+						    	conn.game.joiner.sendIrr(boardMessage);
+				        	} else {
+					        	conn.game.hoster.sendIrr(boardMessage);
+						    	conn.game.joiner.sendReg(boardMessage);
+				        	}
 				        } else if (res == 1) {
 				        	//Success, and game finished
-				        	conn.game.hoster.sendIrr(boardMessage);
-				        	conn.game.joiner.sendIrr(boardMessage);
+				        	if (player == Constants.CELL_RED) {
+						    	conn.game.hoster.sendReg(boardMessage);
+						    	conn.game.joiner.sendIrr(boardMessage);
+				        	} else {
+					        	conn.game.hoster.sendIrr(boardMessage);
+						    	conn.game.joiner.sendReg(boardMessage);
+				        	}
 				        	//TODO
 				        } else if (res == -1) {
 				        	//Illegal move
