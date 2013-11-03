@@ -193,7 +193,7 @@ public class ClientSender {
 	
 	private void chat(String input) {
 		int state = s.getCurrentState();
-		if(state == Session.STATE_LOBBY) {
+		if(state == Session.STATE_LOBBY || state == Session.STATE_HOST_WAITING) {
 			s.println("Cannot chat outside of a game!");
 		} else if(state != Session.STATE_DISCONNECTED) {
             String tokens[] = input.split("\\s+");
