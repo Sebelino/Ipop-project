@@ -80,23 +80,25 @@ public class MasterThread extends Thread {
                 }
             }else if(tokens[0].equals("join")){
                 String proposedName = tokens[1];
-                if(!gameNameIsAvailable(proposedName)){
-                    Game joinedGame = null;
-                    for(Game game : games){
-                        if(game.gameName.equalsIgnoreCase(proposedName)){
-                            joinedGame = game;
-                            break;
-                        }
+                Game joinedGame = null;
+                for(Game game : games){
+                    if(game.gameName.equalsIgnoreCase(proposedName)){
+                        joinedGame = game;
+                        break;
                     }
-                    if(joinedGame == null){
-                        String msg = "error There is no game with that name.";
-                        conn.sendReg(msg);
-                        conn.printComm("sendReg",msg);
-                    }else{
-                        joinedGame.join(conn);
-                        conn.sendReg("ok");
-                        conn.printComm("sendReg","ok");
-                    }
+                }
+                if(joinedGame == null){
+                    String msg = "error There is no game with that name.";
+                    conn.sendReg(msg);
+                    conn.printComm("sendReg",msg);
+                }else{
+                    joinedGame.join(conn);
+                    String msg1 = "joined "+joinedGame.joinerName()+" "+joinedGame.gameName;
+                    conn.sendReg(msg1);
+                    conn.printComm("sendReg",msg1);
+                    String msg2 = "";
+                    conn.sendReg(msg2);
+                    conn.printComm("sendReg",msg2);
                 }
             }else if(tokens[0].equals("move")){
                 //TODO
