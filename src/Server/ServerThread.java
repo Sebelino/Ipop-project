@@ -11,7 +11,7 @@ public class ServerThread extends Thread {
     private Queue<String> requests;
     private Queue<String> responses;
 
-    public Socket socket = null;
+    public Socket socket;
     private BufferedReader in;
     PrintWriter out;
 
@@ -145,6 +145,7 @@ public class ServerThread extends Thread {
      */
     public void sendReg(String text){
         send("reg "+text);
+        printComm("sendReg", text);
     }
 
     /**

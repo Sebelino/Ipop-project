@@ -54,7 +54,6 @@ public class MasterThread extends Thread {
             if(tokens[0].equals("list")){
                 String listResponse = listResponse();
                 conn.sendReg(listResponse);
-                conn.printComm("sendReg",listResponse);
             }else if(tokens[0].equals("exit")){
                 tryQuittingGame(conn.clientName);
             }
@@ -65,7 +64,6 @@ public class MasterThread extends Thread {
                     conn.clientName = proposedName;
                 }else{
                     conn.sendReg("error That name is unavailable.");
-                    conn.printComm("sendReg","error That name is unavailable.");
                 }
             }else if(tokens[0].equals("host")){
                 String proposedName = tokens[1];
@@ -73,10 +71,8 @@ public class MasterThread extends Thread {
                     Game game = new Game(proposedName,conn);
                     games.add(game);
                     conn.sendReg("ok");
-                    conn.printComm("sendReg","ok");
                 }else{
                     conn.sendReg("error That name is unavailable.");
-                    conn.printComm("sendReg","error That name is unavailable.");
                 }
             }else if(tokens[0].equals("join")){
                 String proposedName = tokens[1];
@@ -91,11 +87,9 @@ public class MasterThread extends Thread {
                     if(joinedGame == null){
                         String msg = "error There is no game with that name.";
                         conn.sendReg(msg);
-                        conn.printComm("sendReg",msg);
                     }else{
                         joinedGame.join(conn);
                         conn.sendReg("ok");
-                        conn.printComm("sendReg","ok");
                     }
                 }
             }else if(tokens[0].equals("move")){
@@ -114,7 +108,9 @@ public class MasterThread extends Thread {
                 } catch (Exception e) {
                 	//Probably because the arguments were not valid integers.
                 	//Notify player somehow
+                	conn.sendReg("error Illegal command or parameters");
                 }
+                
                 
                 //Find the correct game and call:
                 //correctGame.makeMove(player, positions);
