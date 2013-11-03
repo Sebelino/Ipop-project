@@ -35,7 +35,6 @@ public class MasterThread extends Thread {
                     processRequest(conn);
                 }
             }
-            System.out.println("NEXT!");
             if(clientCount != connections.size()){
                 clientCount = connections.size();
                 System.out.println("There are currently "+clientCount+" clients connected.");
@@ -81,7 +80,7 @@ public class MasterThread extends Thread {
                 }
             }else if(tokens[0].equals("join")){
                 String proposedName = tokens[1];
-                if(gameNameIsAvailable(proposedName)){
+                if(!gameNameIsAvailable(proposedName)){
                     Game joinedGame = null;
                     for(Game game : games){
                         if(game.gameName.equalsIgnoreCase(proposedName)){
@@ -89,17 +88,15 @@ public class MasterThread extends Thread {
                             break;
                         }
                     }
-                    if(joinedGame == null){ // There was no game with the name that the client mentions.
-                        conn.sendReg("error There is no game with that name.");
-                        conn.printComm("sendReg","error There is no game with that name.");
+                    if(joinedGame == null){
+                        String msg = "error There is no game with that name.";
+                        conn.sendReg(msg);
+                        conn.printComm("sendReg",msg);
                     }else{
                         joinedGame.join(conn);
                         conn.sendReg("ok");
                         conn.printComm("sendReg","ok");
                     }
-                }else{
-                    conn.sendReg("error That name is unavailable.");
-                    conn.printComm("sendReg","error That name is unavailable.");
                 }
             }else if(tokens[0].equals("move")){
                 //TODO
@@ -152,12 +149,12 @@ public class MasterThread extends Thread {
             Game game = it.next();
             if(game.hosterName().equals(clientName)){
                 wake(game.hoster);
-                game.hoster.send("ok");
+                game.hoster.sendReg("ok");
                 it.remove();
                 break;
             }else if(game.joinerName().equals(clientName)){
                 it.remove();
-                game.joiner.send("ok");
+                game.joiner.sendReg("ok");
                 wake(game.joiner);
                 break;
             }
