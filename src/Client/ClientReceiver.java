@@ -93,17 +93,19 @@ public class ClientReceiver extends Thread {
     		//Or well, if connection dies I guess we can terminate from here
     		
     		try {
-    			input = in.readLine();
-    		} catch(Exception e){
-    			s.println("Connection died or something, terminating");
+    			input = in.readLine().trim().toLowerCase();
+    		}catch(NullPointerException e){
+    			s.println("Error: Received null from the server. Terminating.");
+                System.exit(1);
+            }catch(Exception e){
+    			s.println("Connection died or something; terminating");
     			//in.close();
     			System.exit(1);
     		}
     		
-    		input = input.trim().toLowerCase();
-    		String[] tokens = input.split(" ");
+    		String[] tokens = input.split("\\s+");
     		//check type of input
-    		if(tokens.length < 2)
+    		if(tokens.length <= 1)
     			continue;
     		
     		String type = tokens[0];

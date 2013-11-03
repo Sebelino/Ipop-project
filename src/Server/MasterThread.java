@@ -35,7 +35,6 @@ public class MasterThread extends Thread {
                     processRequest(conn);
                 }
             }
-            System.out.println("NEXT!");
             if(clientCount != connections.size()){
                 clientCount = connections.size();
                 System.out.println("There are currently "+clientCount+" clients connected.");
@@ -56,6 +55,8 @@ public class MasterThread extends Thread {
                 String listResponse = listResponse();
                 conn.sendReg(listResponse);
                 conn.printComm("sendReg",listResponse);
+            }else if(tokens[0].equals("exit")){
+                tryQuittingGame(conn.clientName);
             }
         }else if(tokens.length == 2){
             if(tokens[0].equals("setname")){
@@ -79,7 +80,7 @@ public class MasterThread extends Thread {
                 }
             }else if(tokens[0].equals("join")){
                 String proposedName = tokens[1];
-                if(gameNameIsAvailable(proposedName)){
+                if(!gameNameIsAvailable(proposedName)){
                     Game joinedGame = null;
                     for(Game game : games){
                         if(game.gameName.equalsIgnoreCase(proposedName)){
@@ -87,17 +88,15 @@ public class MasterThread extends Thread {
                             break;
                         }
                     }
-                    if(joinedGame == null){ // There was no game with the name that the client mentions.
-                        conn.sendReg("error There is no game with that name.");
-                        conn.printComm("sendReg","error There is no game with that name.");
+                    if(joinedGame == null){
+                        String msg = "error There is no game with that name.";
+                        conn.sendReg(msg);
+                        conn.printComm("sendReg",msg);
                     }else{
                         joinedGame.join(conn);
                         conn.sendReg("ok");
                         conn.printComm("sendReg","ok");
                     }
-                }else{
-                    conn.sendReg("error That name is unavailable.");
-                    conn.printComm("sendReg","error That name is unavailable.");
                 }
             }else if(tokens[0].equals("move")){
                 //TODO
@@ -128,9 +127,6 @@ public class MasterThread extends Thread {
                 //If not in a game: do nothing for now.
                 //Might implement lobby chat in the future, though.
                 
-                
-                
-                
             }else{
                 throw new IllegalArgumentException("Request to master thread was not recognized.");
             }
@@ -139,6 +135,29 @@ public class MasterThread extends Thread {
         }
         wake(conn);
         System.out.println("exiting processReq");
+    }
+
+    /**
+     * Make the player identified by the parameter quit a game, if s/he is part of one.
+     */
+    private void tryQuittingGame(String clientName){
+        Iterator<Game> it = games.iterator();
+        while(it.hasNext()){
+            Game game = it.next();
+            if(game.hosterName().equals(clientName)){
+                wake(game.hoster);
+                game.hoster.sendReg("ok");
+                game.hoster.printComm("sendReg","ok");
+                it.remove();
+                break;
+            }else if(game.joinerName().equals(clientName)){
+                wake(game.joiner);
+                game.joiner.sendReg("ok");
+                game.hoster.printComm("sendReg","ok");
+                it.remove();
+                break;
+            }
+        }
     }
 
     /**

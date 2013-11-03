@@ -8,8 +8,8 @@ import java.util.Vector;
  * @version 2013-10-27
  */
 public class Game{
-    private final ServerThread hoster;
-    private ServerThread joiner;
+    public final ServerThread hoster;
+    public ServerThread joiner;
     public final String gameName;
     private GameState state;
     private boolean started, finished;
@@ -112,12 +112,11 @@ public class Game{
     }
 
     /**
-     * @return The name of the joining player.
-     * @throws RuntimeException if no one has joined yet.
+     * @return The name of the joining player, or "-" if no player has joined.
      */
     public synchronized String joinerName(){
         if(!hasJoined()){
-            throw new RuntimeException("No one has joined this game.");
+            return "-";
         }
         return joiner.clientName;
     }

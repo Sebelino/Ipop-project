@@ -30,6 +30,7 @@ public class ClientSender {
 		aliases.put("exit", "exit");
 		//remote commands
 		aliases.put("list", "list");
+		aliases.put("ls", "list");
 		aliases.put("chat", "chat");
 		aliases.put("host", "host");
 		aliases.put("join", "join");
@@ -312,11 +313,11 @@ public class ClientSender {
 			}
 		}
 		
-		s.println("Goodbye");
+		s.println("Goodbye.");
 		System.exit(0);
 	}
 	
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException,Exception {
 		Socket chSocket = null;
         String adress;
         PrintWriter out = null;
@@ -351,6 +352,9 @@ public class ClientSender {
         
         while(!gotname) {
         	String serverresponse = in.readLine(); //should be "entername" but we dont care
+            if(!serverresponse.equals("reg entername")){
+                throw new Exception("Server did not comply to the protocol!");
+            }
         	
             //prompt user to enter name:
             System.out.print("Enter name: ");
@@ -358,7 +362,7 @@ public class ClientSender {
         	out.println(name);
         	
         	serverresponse = in.readLine().trim().toLowerCase();
-        	String[] tokens = serverresponse.split(" ");
+        	String[] tokens = serverresponse.split("\\s+");
         	if(tokens[0].equals("reg") && tokens[1].equals("ok")) {
         		gotname = true;
         	} else {
