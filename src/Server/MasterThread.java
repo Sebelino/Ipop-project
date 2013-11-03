@@ -90,12 +90,12 @@ public class MasterThread extends Thread {
                     joinedGame.join(conn);
                     // Send messages to joiner.
                     String joinMessage = "joined "+joinedGame.joinerName()+" "+joinedGame.gameName;
-                    String boardMessage = joinedGame.getStateString();
+                    String boardMessage = "board "+joinedGame.getStateString();
                     conn.sendReg(joinMessage);
                     conn.sendReg(boardMessage);
                     // Send messages to hoster.
-                    conn.sendIrr(joinMessage);
-                    conn.sendIrr(boardMessage);
+                    joinedGame.hoster.sendIrr(joinMessage);
+                    joinedGame.hoster.sendIrr(boardMessage);
                 }
             }else if(tokens[0].equals("move")){
                 //TODO
@@ -129,7 +129,7 @@ public class MasterThread extends Thread {
                 //Might implement lobby chat in the future, though.
                 
             }else{
-                throw new IllegalArgumentException("Request to master thread was not recognized.");
+                System.err.println("Could not parse request!");
             }
         }else{
             System.err.println("Could not parse request!");
