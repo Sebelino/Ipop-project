@@ -127,9 +127,6 @@ public class MasterThread extends Thread {
                 //If not in a game: do nothing for now.
                 //Might implement lobby chat in the future, though.
                 
-                
-                
-                
             }else{
                 throw new IllegalArgumentException("Request to master thread was not recognized.");
             }
@@ -150,12 +147,14 @@ public class MasterThread extends Thread {
             if(game.hosterName().equals(clientName)){
                 wake(game.hoster);
                 game.hoster.sendReg("ok");
+                game.hoster.printComm("sendReg","ok");
                 it.remove();
                 break;
             }else if(game.joinerName().equals(clientName)){
-                it.remove();
-                game.joiner.sendReg("ok");
                 wake(game.joiner);
+                game.joiner.sendReg("ok");
+                game.hoster.printComm("sendReg","ok");
+                it.remove();
                 break;
             }
         }

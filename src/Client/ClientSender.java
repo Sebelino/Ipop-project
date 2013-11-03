@@ -30,6 +30,7 @@ public class ClientSender {
 		aliases.put("exit", "exit");
 		//remote commands
 		aliases.put("list", "list");
+		aliases.put("ls", "list");
 		aliases.put("chat", "chat");
 		aliases.put("host", "host");
 		aliases.put("join", "join");
