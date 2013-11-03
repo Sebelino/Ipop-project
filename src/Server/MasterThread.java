@@ -76,21 +76,26 @@ public class MasterThread extends Thread {
                 }
             }else if(tokens[0].equals("join")){
                 String proposedName = tokens[1];
-                if(!gameNameIsAvailable(proposedName)){
-                    Game joinedGame = null;
-                    for(Game game : games){
-                        if(game.gameName.equalsIgnoreCase(proposedName)){
-                            joinedGame = game;
-                            break;
-                        }
+                Game joinedGame = null;
+                for(Game game : games){
+                    if(game.gameName.equalsIgnoreCase(proposedName)){
+                        joinedGame = game;
+                        break;
                     }
-                    if(joinedGame == null){
-                        String msg = "error There is no game with that name.";
-                        conn.sendReg(msg);
-                    }else{
-                        joinedGame.join(conn);
-                        conn.sendReg("ok");
-                    }
+                }
+                if(joinedGame == null){
+                    String msg = "error There is no game with that name.";
+                    conn.sendReg(msg);
+                }else{
+                    joinedGame.join(conn);
+                    // Send messages to joiner.
+                    String joinMessage = "joined "+joinedGame.joinerName()+" "+joinedGame.gameName;
+                    String boardMessage = joinedGame.getStateString();
+                    conn.sendReg(joinMessage);
+                    conn.sendReg(boardMessage);
+                    // Send messages to hoster.
+                    conn.sendIrr(joinMessage);
+                    conn.sendIrr(boardMessage);
                 }
             }else if(tokens[0].equals("move")){
                 //TODO
@@ -143,13 +148,13 @@ public class MasterThread extends Thread {
             if(game.hosterName().equals(clientName)){
                 wake(game.hoster);
                 game.hoster.sendReg("ok");
-                game.hoster.printComm("sendReg","ok");
+                //game.hoster.printComm("sendReg","ok");
                 it.remove();
                 break;
             }else if(game.joinerName().equals(clientName)){
                 wake(game.joiner);
                 game.joiner.sendReg("ok");
-                game.hoster.printComm("sendReg","ok");
+                //game.hoster.printComm("sendReg","ok");	//Huh??, hoster?
                 it.remove();
                 break;
             }
