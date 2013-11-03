@@ -53,7 +53,7 @@ public class ServerThread extends Thread {
                     name = receive();
                 }catch(NullPointerException e){
                     printComm("receive",null);
-                    System.err.println("The client sent a null pointer for the name. "+
+                    System.out.println("The client sent a null pointer for the name. "+
                             "Probably because it disconnected.");
                     return;
                 }
@@ -77,6 +77,7 @@ public class ServerThread extends Thread {
             	try {
                 	command = receive();
                 } catch (Exception e) {
+                	System.out.println("A client seems to have disconnected!");
                 	return;
                 }
                 String[] tokens = command.split("\\s+");
