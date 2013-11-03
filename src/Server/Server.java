@@ -29,7 +29,6 @@ public class Server {
 
         System.out.println("Game server started listening on port: " + connectionPort);
         while(listening){
-            System.out.println("im listening");
             ServerThread connection = new ServerThread(serverSocket.accept());
             gamingThread.addConnection(connection);
             //connection.start();

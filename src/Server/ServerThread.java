@@ -110,7 +110,9 @@ public class ServerThread extends Thread {
     }
 
     public void printComm(String direction,String msg){
-        if(!direction.equals("sendReg") && !direction.equals("receive")){
+        if(!direction.equals("sendReg")
+                && !direction.equals("sendIrr")
+                && !direction.equals("receive")){
             throw new IllegalArgumentException("Internal printing method screwed up.");
         }
         if(msg == null){
@@ -136,7 +138,7 @@ public class ServerThread extends Thread {
     /**
      * Sends a packet to the client.
      */
-    public void send(String text){
+    private void send(String text){
         out.println(text);
     }
 
@@ -148,28 +150,17 @@ public class ServerThread extends Thread {
     }
 
     /**
-     * Receives a packet from the client.
-     * @return The content except for the first token "reg".
-     * @throws ProtocolException if the message does not start with "reg".
+     * Sends a packet to the client, including a prepended token "irr".
      */
-    public String receiveReg() throws ProtocolException,IOException{
-        String input = receive();
-        String[] tokens = input.split("\\s+");
-        if(!tokens[0].equals("reg")){
-            throw new ProtocolException("Client missed to prepend the string with reg/irr.");
-        }
-        String output = "";
-        for(int i = 0;i < tokens.length;i++){
-            output += tokens[i];
-        }
-        return output.trim();
+    public void sendIrr(String text){
+        send("irr "+text);
     }
 
     /**
      * Receives a packet from the client.
      * @return The contents, trimmed.
      */
-    public String receive() throws IOException{
+    private String receive() throws IOException{
         return in.readLine().trim();
     }
 

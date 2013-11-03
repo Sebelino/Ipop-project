@@ -93,12 +93,18 @@ public class MasterThread extends Thread {
                     conn.printComm("sendReg",msg);
                 }else{
                     joinedGame.join(conn);
-                    String msg1 = "joined "+joinedGame.joinerName()+" "+joinedGame.gameName;
-                    conn.sendReg(msg1);
-                    conn.printComm("sendReg",msg1);
-                    String msg2 = "";
-                    conn.sendReg(msg2);
-                    conn.printComm("sendReg",msg2);
+                    // Send messages to joiner.
+                    String joinMessage = "joined "+joinedGame.joinerName()+" "+joinedGame.gameName;
+                    String boardMessage = joinedGame.getStateString();
+                    conn.sendReg(joinMessage);
+                    conn.printComm("sendReg",joinMessage);
+                    conn.sendReg(boardMessage);
+                    conn.printComm("sendReg",boardMessage);
+                    // Send messages to hoster.
+                    conn.sendIrr(joinMessage);
+                    conn.printComm("sendIrr",joinMessage);
+                    conn.sendIrr(boardMessage);
+                    conn.printComm("sendIrr",boardMessage);
                 }
             }else if(tokens[0].equals("move")){
                 //TODO
