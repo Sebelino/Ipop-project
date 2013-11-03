@@ -73,7 +73,12 @@ public class ServerThread extends Thread {
             //printComm("sendReg","ok");
             boolean requestsExit = false;
             while(!requestsExit){
-                String command = receive();
+            	String command = "";
+            	try {
+                	command = receive();
+                } catch (Exception e) {
+                	return;
+                }
                 String[] tokens = command.split("\\s+");
                 if(command.isEmpty()){ // Received whitespace.
                     printComm("receive","");
