@@ -149,7 +149,7 @@ public class MasterThread extends Thread {
 				        }
 				        
 				        System.err.println("Return value was: " + res);
-				        String boardMessage = conn.game.getStateString();
+				        String boardMessage = "board "+conn.game.getStateString();
 				        
 				        if (res == 0) {
 				        	//Success!
