@@ -254,13 +254,13 @@ public class MasterThread extends Thread {
             if(game.hosterName().equals(clientName)){
                 wake(game.hoster);
                 game.hoster.sendReg("ok");
-                //game.hoster.printComm("sendReg","ok");
+                game.joiner.sendIrr("exit The other player exited the game.");
                 it.remove();
                 break;
             }else if(game.joinerName().equals(clientName)){
                 wake(game.joiner);
                 game.joiner.sendReg("ok");
-                //game.hoster.printComm("sendReg","ok");	//Huh??, hoster?
+                game.hoster.sendIrr("exit The other player exited the game.");
                 it.remove();
                 break;
             }
