@@ -124,7 +124,20 @@ public class MasterThread extends Thread {
 				        	//TODO
 				        }
 				        
-				        conn.game.makeMove(player, positions);
+				        int res = conn.game.makeMove(player, positions);
+				        
+				        if (res == 0) {
+				        	//Success!
+				        } else if (res == 1) {
+				        	//Success, and game finished
+				        	//TODO
+				        } else if (res == -1) {
+				        	//Illegal move
+				        	
+				        } else if (res == -2) {
+				        	//Not your turn!
+				        	
+				        }
 		            } catch (Exception e) {
 		            	//Probably because the arguments were not valid integers.
 		            	//Notify player somehow
