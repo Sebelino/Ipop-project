@@ -90,6 +90,12 @@ public class ServerThread extends Thread {
                 }else if(tokens.length == 2 && tokens[0].equals("join")){
                     requests.add(command);
                     putToSleep();
+                }else if(tokens.length >= 3 && tokens[0].equals("move")){
+                    requests.add(command);
+                    putToSleep();
+                }else if(tokens.length == 3 && tokens[0].equals("chat")){
+                    requests.add(command);
+                    putToSleep();
                 }else{
                     throw new ProtocolException("Request from client was not recognized.");
                 }

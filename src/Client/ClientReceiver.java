@@ -50,7 +50,6 @@ public class ClientReceiver extends Thread {
     }
     
     private void board(String input) {
-        System.out.println(input);
     	int state = s.getCurrentState();
     	String[] tokens = input.split(" ");
     	if(state == Session.STATE_HOST_GAME || state == Session.STATE_PEER_GAME) {
