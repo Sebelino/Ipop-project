@@ -214,7 +214,6 @@ public class ClientSender {
             for(int i = 1;i < tokens.length;i++){
                 output += " "+tokens[i];
             }
-            System.out.println("output="+output);
 			send(output); //we are not waiting for a response here.
 		}
 	}
@@ -282,7 +281,7 @@ public class ClientSender {
 	}
 	
 	private void send(String msg) {
-		System.err.println("SENDING TO SERVER: " + msg); //TODO REMOVE THIS
+		//System.err.println("SENDING TO SERVER: " + msg); //TODO REMOVE THIS
 		out.println(msg);
 	}
 

@@ -113,6 +113,8 @@ public class ServerThread extends Thread {
             socket.close();
         }catch (IOException e){
             e.printStackTrace();
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
         System.out.println("Server thread signing out.");
     }
