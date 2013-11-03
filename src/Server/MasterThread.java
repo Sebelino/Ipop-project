@@ -51,7 +51,8 @@ public class MasterThread extends Thread {
         String request = conn.pollRequest();
         String processedReq = request;
         if(hasNextToken(processedReq)){
-            String token = nextToken(processedReq); processedReq = removeToken(processedReq);
+            String token = nextToken(processedReq);
+            processedReq = removeToken(processedReq);
             if(token.equals("list")){
                 String listResponse = listResponse();
                 conn.sendReg(listResponse);
@@ -116,7 +117,13 @@ public class MasterThread extends Thread {
 		            //player should be either 1 or 10 (Constants.CELL_RED or
 		            //Constants.CELL_WHITE) depending on what player requested the move.
 		            
+		            System.err.println("processedReq is " + processedReq);
 		            String[] tokens = processedReq.split("\\s+");
+		            System.err.println("Tokenized processedReq. Results:");
+		            
+		            for (int i = 0;i<tokens.length;i++) {
+				    	System.err.println(tokens[i]);
+				    }
 		            
 		            try {
 				        for (int i = 0;i<tokens.length;i++) {
@@ -135,17 +142,23 @@ public class MasterThread extends Thread {
 				        
 				        int res = conn.game.makeMove(player, positions);
 				        System.err.println("Called makeMove with parameters:");
-				        System.err.println(player);
+				        System.err.println("Current player is: " + player);
+				        System.err.println("Number of positions: "+positions.size());
 				        for (int i = 0;i<positions.size();i++) {
 				        	System.err.println(" " + positions.get(i));
 				        }
 				        
 				        System.err.println("Return value was: " + res);
+				        String boardMessage = conn.game.getStateString();
 				        
 				        if (res == 0) {
 				        	//Success!
+				        	conn.game.hoster.sendIrr(boardMessage);
+				        	conn.game.joiner.sendIrr(boardMessage);
 				        } else if (res == 1) {
 				        	//Success, and game finished
+				        	conn.game.hoster.sendIrr(boardMessage);
+				        	conn.game.joiner.sendIrr(boardMessage);
 				        	//TODO
 				        } else if (res == -1) {
 				        	//Illegal move
@@ -191,7 +204,7 @@ public class MasterThread extends Thread {
         return request.split("\\s+")[0];
     }
 
-    private String removeToken(String request){
+	private String removeToken(String request){
         String[] tokens = request.split("\\s+");
         String result = "";
         for(int i = 1;i < tokens.length;i++){
