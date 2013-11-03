@@ -57,13 +57,13 @@ public class ClientReceiver extends Thread {
 			String gs = extractArgStr(input);
 			s.setBoard(gs);
 			String res = "New move made, current board:\n" + s.parseBoard(tokens[2]);
-			if(state == Session.STATE_HOST_GAME && tokens[2].equals("r")) {
+			if(state == Session.STATE_HOST_GAME && tokens[4].equals("r")) {
 				res += "It is YOUR turn, you are red\n";
-			} else if(state == Session.STATE_HOST_GAME && tokens[2].equals("w")) {
+			} else if(state == Session.STATE_HOST_GAME && tokens[4].equals("w")) {
 				res += "It is your opponent's turn, you are red\n";
-			} else if(state == Session.STATE_PEER_GAME && tokens[2].equals("r")) {
+			} else if(state == Session.STATE_PEER_GAME && tokens[4].equals("r")) {
 				res += "It is your opponent's turn, you are white\n";
-			} else if(state == Session.STATE_PEER_GAME && tokens[2].equals("w")) {
+			} else if(state == Session.STATE_PEER_GAME && tokens[4].equals("w")) {
 				res += "It is YOUR turn, you are white\n";
 			}
 			s.print(res);
@@ -149,7 +149,8 @@ public class ClientReceiver extends Thread {
     				if(tokens[1].equals("joined")) {
     					if(tokens.length == 4) {
     						s.println("Joined game " + tokens[3] + ".");
-    						try {
+    						s.setCurrentState(Session.STATE_PEER_GAME);
+    						try { 
 								input = in.readLine();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -157,7 +158,6 @@ public class ClientReceiver extends Thread {
 								s.println("Disconnected from server, exiting");
 								System.exit(0);
 							}
-    						s.setCurrentState(Session.STATE_PEER_GAME);
     						board(input);
     						s.setWaiting(false);
     					}
