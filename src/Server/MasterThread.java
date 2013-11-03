@@ -49,24 +49,28 @@ public class MasterThread extends Thread {
      */
     private void processRequest(final ServerThread conn){
         String request = conn.pollRequest();
-        String[] tokens = request.split("\\s+");
-        if(tokens.length == 1){
-            if(tokens[0].equals("list")){
+        String processedReq = request;
+        if(hasNextToken(processedReq)){
+            String token = nextToken(processedReq); processedReq = removeToken(processedReq);
+            if(token.equals("list")){
                 String listResponse = listResponse();
                 conn.sendReg(listResponse);
-            }else if(tokens[0].equals("exit")){
+                if(hasNextToken(processedReq)){
+                    System.err.println("Could not parse request!");
+                }
+            }else if(token.equals("exit")){
                 tryQuittingGame(conn.clientName);
-            }
-        }else if(tokens.length == 2){
-            if(tokens[0].equals("setname")){
-                String proposedName = tokens[1];
+            }else if(token.equals("setname")){
+                token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                String proposedName = token;
                 if(playerNameIsAvailable(proposedName)){
                     conn.clientName = proposedName;
                 }else{
                     conn.sendReg("error That name is unavailable.");
                 }
-            }else if(tokens[0].equals("host")){
-                String proposedName = tokens[1];
+            }else if(token.equals("host")){
+                token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                String proposedName = token;
                 if(gameNameIsAvailable(proposedName)){
                     Game game = new Game(proposedName,conn);
                     games.add(game);
@@ -74,8 +78,9 @@ public class MasterThread extends Thread {
                 }else{
                     conn.sendReg("error That name is unavailable.");
                 }
-            }else if(tokens[0].equals("join")){
-                String proposedName = tokens[1];
+            }else if(token.equals("join")){
+                token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                String proposedName = token;
                 Game joinedGame = null;
                 for(Game game : games){
                     if(game.gameName.equalsIgnoreCase(proposedName)){
@@ -97,7 +102,7 @@ public class MasterThread extends Thread {
                     joinedGame.hoster.sendIrr(joinMessage);
                     joinedGame.hoster.sendIrr(boardMessage);
                 }
-            }else if(tokens[0].equals("move")){
+            }else if(token.equals("move")){
                 //TODO
                 
                 //Check if user is in a game. If no: do nothing.
@@ -107,9 +112,10 @@ public class MasterThread extends Thread {
                 //player should be either 1 or 10 (Constants.CELL_RED or
                 //Constants.CELL_WHITE) depending on what player requested the move.
                 try {
-		            for (int i = 1;i<tokens.length;i++) {
-		            	positions.add(Integer.parseInt(tokens[i]));
-		            }
+                    while(hasNextToken(processedReq)){
+                        token = nextToken(processedReq); processedReq = removeToken(processedReq);
+		            	positions.add(Integer.parseInt(token));
+                    }
                 } catch (Exception e) {
                 	//Probably because the arguments were not valid integers.
                 	//Notify player somehow
@@ -119,8 +125,8 @@ public class MasterThread extends Thread {
                 
                 //Find the correct game and call:
                 //correctGame.makeMove(player, positions);
-                                
-            }else if(tokens[0].equals("chat")){
+            }else if(token.equals("chat")){
+                token = nextToken(processedReq); processedReq = removeToken(processedReq);
                 //TODO
                 
                 //Check if user is in a game .
@@ -129,13 +135,30 @@ public class MasterThread extends Thread {
                 //Might implement lobby chat in the future, though.
                 
             }else{
-                System.err.println("Could not parse request!");
+                System.err.println("Could not parse request...!");
             }
         }else{
             System.err.println("Could not parse request!");
         }
         wake(conn);
         System.out.println("exiting processReq");
+    }
+
+    private boolean hasNextToken(String request){
+        return !request.trim().isEmpty();
+    }
+
+    private String nextToken(String request){
+        return request.split("\\s+")[0];
+    }
+
+    private String removeToken(String request){
+        String[] tokens = request.split("\\s+");
+        String result = "";
+        for(int i = 1;i < tokens.length;i++){
+            result += tokens[i];
+        }
+        return result;
     }
 
     /**
