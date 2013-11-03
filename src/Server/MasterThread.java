@@ -11,7 +11,7 @@ public class MasterThread extends Thread {
     private Set<Game> games;
 
     /**
-     * Skapar en tråd för ändring av bankens välkomstbanner.
+     * 
      */
     public MasterThread() {
         connections = new HashSet<ServerThread>();
@@ -70,6 +70,7 @@ public class MasterThread extends Thread {
                 if(gameNameIsAvailable(proposedName)){
                     Game game = new Game(proposedName,conn);
                     games.add(game);
+                    conn.game = game;	//New stuff
                     conn.sendReg("ok");
                 }else{
                     conn.sendReg("error That name is unavailable.");
@@ -88,6 +89,7 @@ public class MasterThread extends Thread {
                     conn.sendReg(msg);
                 }else{
                     joinedGame.join(conn);
+                    conn.game = joinedGame;		//New stuff
                     // Send messages to joiner.
                     String joinMessage = "joined "+joinedGame.joinerName()+" "+joinedGame.gameName;
                     String boardMessage = joinedGame.getStateString();
@@ -100,26 +102,39 @@ public class MasterThread extends Thread {
             }else if(tokens[0].equals("move")){
                 //TODO
                 
-                //Check if user is in a game. If no: do nothing.
-                //If yes, parse the parameters to an integer vector.
-                Vector<Integer> positions = new Vector<Integer>();
-                int player;
-                //player should be either 1 or 10 (Constants.CELL_RED or
-                //Constants.CELL_WHITE) depending on what player requested the move.
-                try {
-		            for (int i = 1;i<tokens.length;i++) {
-		            	positions.add(Integer.parseInt(tokens[i]));
+                //Check if user is in a game. If not: do nothing.
+                if (conn.isInGame()) {
+                	
+		            //If yes, parse the parameters to an integer vector.
+		            Vector<Integer> positions = new Vector<Integer>();
+		            int player = -1;
+		            //player should be either 1 or 10 (Constants.CELL_RED or
+		            //Constants.CELL_WHITE) depending on what player requested the move.
+		            try {
+				        for (int i = 1;i<tokens.length;i++) {
+				        	positions.add(Integer.parseInt(tokens[i]));
+				        }
+				        
+				        if (conn.equals(conn.game.hoster)) {
+				        	player = Constants.CELL_RED;
+				        } if (conn.equals(conn.game.joiner)) {
+				        	player = Constants.CELL_WHITE;
+				        } else {
+				        	//Something is wrong. Player is not in his own game.
+				        	//TODO
+				        }
+				        
+				        conn.game.makeMove(player, positions);
+		            } catch (Exception e) {
+		            	//Probably because the arguments were not valid integers.
+		            	//Notify player somehow
+		            	conn.sendReg("error Illegal command or parameters");
 		            }
-                } catch (Exception e) {
-                	//Probably because the arguments were not valid integers.
-                	//Notify player somehow
-                	conn.sendReg("error Illegal command or parameters");
-                }
-                
-                
-                //Find the correct game and call:
-                //correctGame.makeMove(player, positions);
-                                
+		            
+                } else {
+                	//Notify player that you cannot move unless in a game
+                	//TODO
+                }            
             }else if(tokens[0].equals("chat")){
                 //TODO
                 

@@ -10,6 +10,7 @@ public class ServerThread extends Thread {
     public String clientName;
     private Queue<String> requests;
     private Queue<String> responses;
+    public Game game;
 
     public Socket socket;
     private BufferedReader in;
@@ -18,7 +19,8 @@ public class ServerThread extends Thread {
     public ServerThread(Socket socket) {
         super("ServerThread");
         this.socket = socket;
-        clientName = "";
+        game = null;
+        clientName = "";	//null istället, kanske?
         requests = new LinkedList<String>();
 
         //Thread thread = new Thread(){ //BEHÖVS INTE; gör bara send från mastertråden
@@ -171,6 +173,13 @@ public class ServerThread extends Thread {
      */
     public boolean hasRequest(){
         return !requests.isEmpty();
+    }
+
+	/**
+     * @return true iff the client is in a game
+     */
+    public boolean isInGame(){
+        return (game != null) ? true : false;
     }
 
     /**

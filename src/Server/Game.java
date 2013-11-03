@@ -36,6 +36,7 @@ public class Game{
 		stateString = state.toMessage();
 		started = true;
 		lNextMoves = new Vector<Move>();
+		state.findPossibleMoves(lNextMoves);
 	}
 
     public synchronized int makeMove(int player, Vector<Integer> poses) {
