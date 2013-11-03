@@ -102,27 +102,40 @@ public class ClientSender {
 		" list - get a list of active game sessions.\n" +
 		" move - make a move.\n" +
 		" show - show the current board.\n" +
-		"Type help <command> to get details about usage.\n";
+		"Type help <command> to get details about usage, or help rules to get an overview of the game rules.\n";
 		
 		
 		if(comm.length == 2) {
 			String arg = comm[1];
 			if(arg.equals("chat")) {
-				helps = "chat usage: chat <message>.\n";
+				helps = "chat usage: chat <message>. Send a chat message to your opponent during a game!\n";
 			} else if(arg.equals("exit")) {
-				helps = "exit usage: exit.\n";
+				helps = "exit usage: exit. Exit (surrender) a game, or exit the program if not in a game.\n";
 			} else if(arg.equals("help")) {
 				helps = "help usage: just help or help <command>.\n";
 			} else if(arg.equals("host")) {
-				helps = "host usage: host <gamename>.\n";
+				helps = "host usage: host <gamename>. Host a new game.\n";
 			} else if(arg.equals("join")) {
-				helps = "join usage: join <gamename>.\n";
+				helps = "join usage: join <gamename>. Join an existing game. Use list to find games!\n";
 			} else if(arg.equals("list")) {
-				helps = "list usage: list.\n";
+				helps = "list usage: list. List the current game sessions as \"<gamename> by <player>\"\n";
 			} else if(arg.equals("move")) {
-				helps = "move usage: move <from> <to>. Example: move d4 e5.\n";
+				helps = "move usage: move <from> <to>. Example: move b6 a5. Using the chess notation. " +
+						"Columns have coordinates as letters A-H, and rows are numbers 1-8. The board" +
+						" representation during a game will label the rows and columns. In case of jump " +
+						"moves, just type the squares. In case of chain moves, type all the squares the " +
+						"piece moves during its jumps.\n";
 			} else if(arg.equals("show")) {
-				helps = "show usage: show.\n";
+				helps = "show usage: show. Shows the current game state.\n";
+			} else if(arg.equals("rules")) {
+				helps = "Checkers is played with 2 players, red and white. Red starts. Pieces move " +
+						"diagonally. Cannot move backward. To take a piece of the opponent, a jump " +
+						"move is performed - the piece moves to the square diagonally behind the opponent " +
+						"piece. If another piece stands on that spot, the piece thus cannot be taken. " +
+						"The goal is to take all your opponent's pieces. If your piece reaches the last row, " +
+						"it is turned into a king. A king is shown as a capital letter. A king works as any " +
+						"normal piece except it may also move backwards. That is the short summary - for more " +
+						"info, search on the internet for \"Checkers\" or \"Draughts\".\n";
 			}
 		} 
 		s.print(helps);
@@ -350,7 +363,6 @@ public class ClientSender {
         }
         Scanner scanner = new Scanner(System.in);
         
-        //TODO set name exchange here
         String name = "player";
         
         //start with the initial name establishment
@@ -390,7 +402,8 @@ public class ClientSender {
         ClientReceiver cr = new ClientReceiver(in,s);
         ClientSender cs = new ClientSender(out,scanner,s);
         
-        s.println("Welcome to the lobby! Type \"list\" to see a list of games!");
+        s.println("Welcome to the lobby! Type \"list\" to see a list of games! " +
+        		"Type \"help\" for information about commands");
         cr.start(); //important to start this one first as it is a new thread!
         
         cs.run();//the current main thread will become the client receiver
