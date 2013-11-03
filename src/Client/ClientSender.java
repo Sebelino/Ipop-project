@@ -196,7 +196,13 @@ public class ClientSender {
 		if(state == Session.STATE_LOBBY) {
 			s.println("Cannot chat outside of a game!");
 		} else if(state != Session.STATE_DISCONNECTED) {
-			send(input); //we are not waiting for a response here.
+            String tokens[] = input.split("\\s+");
+            String output = tokens[0]+" "+s.getOwnName();
+            for(int i = 1;i < tokens.length;i++){
+                output += " "+tokens[i];
+            }
+            System.out.println("output="+output);
+			send(output); //we are not waiting for a response here.
 		}
 	}
 	

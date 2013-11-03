@@ -110,6 +110,7 @@ public class MasterThread extends Thread {
                 }
             }else if(token.equals("move")){
                 System.err.println("Entering move...");
+                System.err.println(processedReq);
                 //Check if user is in a game. If not: do nothing.
                 if (conn.isInGame()) {
                 	System.err.println("conn is in game");
@@ -147,7 +148,7 @@ public class MasterThread extends Thread {
 				        System.err.println("Current player is: " + player);
 				        System.err.println("Number of positions: "+positions.size());
 				        for (int i = 0;i<positions.size();i++) {
-				        	System.err.println("" + positions.get(i));
+				        	System.err.println(" " + positions.get(i));
 				        }
 				        
 				        System.err.println("Return value was: " + res);
@@ -192,8 +193,22 @@ public class MasterThread extends Thread {
                 	//TODO
                 }            
             }else if(token.equals("chat")){
-                //TODO
-                
+                token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                String playerName = token;
+                String response = "chat "+playerName;
+                while(hasNextToken(processedReq)){
+                    token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                    response += " "+token;
+                }
+                for(Game game : games){
+                    if(game.hosterName().equals(conn.clientName)){
+                        game.joiner.sendIrr(response);
+                        break;
+                    }else if(game.joinerName().equals(conn.clientName)){
+                        game.hoster.sendIrr(response);
+                        break;
+                    }
+                }
                 //Check if user is in a game .
                 //If yes, send the message to the correct opponent.
                 //If not in a game: do nothing for now.
@@ -218,6 +233,9 @@ public class MasterThread extends Thread {
     }
 
 	private String removeToken(String request){
+        if(request.trim().isEmpty()){
+            throw new RuntimeException("Cannot remove a token that does not exist.");
+        }
         String[] tokens = request.split("\\s+");
         String result = "";
         for(int i = 1;i < tokens.length;i++){
