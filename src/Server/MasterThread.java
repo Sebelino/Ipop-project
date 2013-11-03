@@ -106,6 +106,7 @@ public class MasterThread extends Thread {
                 }
             }else if(token.equals("move")){
                 System.err.println("Entering move...");
+                System.err.println(processedReq);
                 //Check if user is in a game. If not: do nothing.
                 if (conn.isInGame()) {
                 	System.err.println("conn is in game");
@@ -118,7 +119,7 @@ public class MasterThread extends Thread {
 		            String[] tokens = processedReq.split("\\s+");
 		            
 		            try {
-				        for (int i = 1;i<tokens.length;i++) {
+				        for (int i = 0;i<tokens.length;i++) {
 				        	positions.add(Integer.parseInt(tokens[i]));
 				        }
 				        System.err.println("Passed int parsing");
@@ -134,9 +135,9 @@ public class MasterThread extends Thread {
 				        
 				        int res = conn.game.makeMove(player, positions);
 				        System.err.println("Called makeMove with parameters:");
-				        System.err.println("" + player);
+				        System.err.println(player);
 				        for (int i = 0;i<positions.size();i++) {
-				        	System.err.println("" + positions.get(i));
+				        	System.err.println(" " + positions.get(i));
 				        }
 				        
 				        System.err.println("Return value was: " + res);
@@ -194,9 +195,9 @@ public class MasterThread extends Thread {
         String[] tokens = request.split("\\s+");
         String result = "";
         for(int i = 1;i < tokens.length;i++){
-            result += tokens[i];
+            result += " "+tokens[i];
         }
-        return result;
+        return result.trim();
     }
 
     /**
