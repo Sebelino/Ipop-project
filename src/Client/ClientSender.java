@@ -231,11 +231,11 @@ public class ClientSender {
 		} else if(state != Session.STATE_DISCONNECTED){
 			String[] tokens = input.split(" ");
 			StringBuilder sb = new StringBuilder();
-			for(int i = 2; i < tokens.length;i++) {
+			for(int i = 1; i < tokens.length;i++) {
 				sb.append(mapPos(tokens[i]) + " ");
 			}
 			s.setWaiting(true);
-			send("move " + sb.toString());
+			send("move " + sb.toString().trim());
 			s.setWaitingFor(Session.WAIT_MOVE);
 			waitForResponse();
 		}
@@ -263,6 +263,7 @@ public class ClientSender {
 	}
 	
 	private void send(String msg) {
+		System.err.println("SENDING TO SERVER: " + msg); //TODO REMOVE THIS
 		out.println(msg);
 	}
 
