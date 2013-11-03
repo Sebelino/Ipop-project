@@ -66,10 +66,10 @@ public class ClientReceiver extends Thread {
 				res += "It is YOUR turn, you are white\n";
 			}
 			s.print(res);
-    	} else {
+    	}// else {
     		//for debugging server
-    		System.err.println("wtf, received board in state " + s.getCurrentState());
-    	}
+    		//System.err.println("wtf, received board in state " + s.getCurrentState());
+    	//}
     }
     
     private String extractArgStr(String input) {
