@@ -49,11 +49,13 @@ public class Game{
 			for (int i = 0;i<lNextMoves.size();i++) {
 				if (wantedMove.equals(lNextMoves.get(i))) {
 					nm = i;
+					wantedMove = lNextMoves.get(i);
 					break;
 				}
 			}
         	
         	if (nm >= 0) {	//Legal move!
+				//state = new GameState(state,wantedMove);	//Don't uncomment!
 				state.doMove(wantedMove);
 				stateString = state.toMessage();
 				state.findPossibleMoves(lNextMoves);
@@ -73,7 +75,7 @@ public class Game{
 						state.doMove(wantedMove);
 						stateString = state.toMessage();
 						finished = true;
-						//return 1;	//?
+						return 1;
 					}
 				}
 				
