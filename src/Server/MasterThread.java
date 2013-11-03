@@ -62,7 +62,8 @@ public class MasterThread extends Thread {
             }else if(token.equals("exit")){
                 tryQuittingGame(conn.clientName);
             }else if(token.equals("setname")){
-                token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                token = nextToken(processedReq);
+                processedReq = removeToken(processedReq);
                 String proposedName = token;
                 if(playerNameIsAvailable(proposedName)){
                     conn.clientName = proposedName;
@@ -70,7 +71,8 @@ public class MasterThread extends Thread {
                     conn.sendReg("error That name is unavailable.");
                 }
             }else if(token.equals("host")){
-                token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                token = nextToken(processedReq);
+                processedReq = removeToken(processedReq);
                 String proposedName = token;
                 if(gameNameIsAvailable(proposedName)){
                     Game game = new Game(proposedName,conn);
@@ -81,7 +83,8 @@ public class MasterThread extends Thread {
                     conn.sendReg("error That name is unavailable.");
                 }
             }else if(token.equals("join")){
-                token = nextToken(processedReq); processedReq = removeToken(processedReq);
+                token = nextToken(processedReq);
+                processedReq = removeToken(processedReq);
                 String proposedName = token;
                 Game joinedGame = null;
                 for(Game game : games){
@@ -148,7 +151,7 @@ public class MasterThread extends Thread {
 				        }
 				        
 				        System.err.println("Return value was: " + res);
-				        String boardMessage = conn.game.getStateString();
+				        String boardMessage = "board "+conn.game.getStateString();
 				        
 				        if (res == 0) {
 				        	//Success!
@@ -171,10 +174,11 @@ public class MasterThread extends Thread {
 				        	//TODO
 				        } else if (res == -1) {
 				        	//Illegal move
+				        	conn.sendReg("error Illegal move!");
 				        	
 				        } else if (res == -2) {
 				        	//Not your turn!
-				        	
+				        	conn.sendReg("error It is not your turn!");
 				        }
 		            } catch (Exception e) {
 		            	//Probably because the arguments were not valid integers.
