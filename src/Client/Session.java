@@ -106,8 +106,8 @@ public class Session {
 		int i = 0;
 		int j = 0;
 		StringBuilder board = new StringBuilder();
-		board.append("    A   B   C   D   E   F   G   H   \n");
-		board.append("   -------------------------------   \n");
+		board.append("    A B C D E F G H \n");
+		board.append("   -----------------   \n");
 		
 		for(int row = 8; row >= 1; row--) {
 			board.append(row + " | "); 
@@ -120,15 +120,13 @@ public class Session {
 				}
 				i++;
 				if(k != 7)
-					board.append("   ");
-				else
 					board.append(" ");
 			}
 			board.append(" | " + row + "\n");
 			i++;
 		}
-		board.append("   -------------------------------   \n");
-		board.append("    A   B   C   D   E   F   G   H   \n");
+		board.append("   -----------------   \n");
+		board.append("    A B C D E F G H \n");
 		
 		return board.toString();
 	}
