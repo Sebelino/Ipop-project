@@ -12,7 +12,9 @@ public class Game{
     public ServerThread joiner;
     public final String gameName;
     private GameState state;
-    private boolean started;
+    private boolean started, finished;
+    private Vector<Move> lNextMoves;
+    private String stateString;
 
     /**
      * Constructor.
@@ -22,53 +24,97 @@ public class Game{
         this.joiner = null;
         this.gameName = gameName;
         started = false;
-        //state = new GameState();
+        finished = false;
+        stateString = null;
     }
 
 	/*
 	 * Initialize the Game
 	 */
-	public void startGame() {
+	private synchronized void startGame() {
 		state = new GameState();
+		stateString = state.toMessage();
 		started = true;
+		lNextMoves = new Vector<Move>();
 	}
 
-	public void makeMove(String playerName,String move) throws GameException{
-		//Most likely obsolete in the future
-		//makeMove(Constants.CELL_RED, 1, 3);
-	}
-	
-    public void makeMove(int player, Vector<Integer> poses) throws GameException{
+    public synchronized int makeMove(int player, Vector<Integer> poses) {
         if(state.getNextPlayer() == player) {
         	//It is indeed this player's turn
         	
+        	Move wantedMove = new Move(poses);
         	
+        	int nm = -1;
+			for (int i = 0;i<lNextMoves.size();i++) {
+				if (wantedMove.equals(lNextMoves.get(i))) {
+					nm = i;
+					break;
+				}
+			}
         	
-        	
+        	if (nm >= 0) {	//Legal move!
+				state.doMove(wantedMove);
+				stateString = state.toMessage();
+				state.findPossibleMoves(lNextMoves);
+				
+				//Check if the only next move is admitting draw or loss
+				if (lNextMoves.size() == 0) {
+					//No possible moves! You lose!
+					//This shouldn't be possible anyway
+					System.err.println("findPossibleMoves() ran, despite game being finished!");
+				} else if (lNextMoves.size() == 1) {
+					int t = lNextMoves.get(0).getType();
+					if (t == Move.MoveType.MOVE_DRAW.getInternalValue() ||
+		t == Move.MoveType.MOVE_RW.getInternalValue() ||
+		t == Move.MoveType.MOVE_WW.getInternalValue()) 
+					{
+						//Only next move is draw or admit loss
+						state.doMove(wantedMove);
+						stateString = state.toMessage();
+						finished = true;
+						//return 1;	//?
+					}
+				}
+				
+				//Otherwise, indicate success!
+        		return 0;
+        	} else {
+        		//Move not in lNextMoves, not legal!
+        		//Don't update game.
+        		return -1;
+        	}
         } else {
         	//Not this player's turn
-        	throw new GameException("It is not your turn.");
+        	return -2;
         }
-    }
-
-    /**
-     * @return The name of the hosting player.
-     */
-    public String hosterName(){
-        return hoster.clientName;
     }
 
     /**
      * Causes the client corresponding to the server thread to join the game.
      */
-    public void join(ServerThread connection){
+    public synchronized void join(ServerThread connection){
         joiner = connection;
+        startGame();
+    }
+    
+    /**
+     * @return The name of the hosting player.
+     */
+    public synchronized String hosterName(){
+        return hoster.clientName;
+    }
+
+	/**
+     * @return The string representation of the current GameState
+     */
+    public synchronized String getStateString(){
+        return stateString;
     }
 
     /**
      * @return The name of the joining player, or "-" if no player has joined.
      */
-    public String joinerName(){
+    public synchronized String joinerName(){
         if(!hasJoined()){
             return "-";
         }
@@ -78,9 +124,16 @@ public class Game{
     /**
      * @return True iff someone has joined this game.
      */
-    public boolean hasJoined(){
+    public synchronized boolean hasJoined(){
         return joiner != null;
     }
+
+    /**
+     * @return True iff someone has joined this game.
+     */
+    public synchronized boolean isFinished(){
+    	return finished;
+    }	
 
     private class GameException extends Exception{
         public GameException(String message){
