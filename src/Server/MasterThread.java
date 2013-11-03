@@ -108,9 +108,6 @@ public class MasterThread extends Thread {
                 //Check if user is in a game. If no: do nothing.
                 //If yes, parse the parameters to an integer vector.
                 Vector<Integer> positions = new Vector<Integer>();
-                int player;
-                //player should be either 1 or 10 (Constants.CELL_RED or
-                //Constants.CELL_WHITE) depending on what player requested the move.
                 try {
                     while(hasNextToken(processedReq)){
                         token = nextToken(processedReq); processedReq = removeToken(processedReq);
@@ -124,7 +121,25 @@ public class MasterThread extends Thread {
                 
                 
                 //Find the correct game and call:
-                //correctGame.makeMove(player, positions);
+                Iterator<Game> it = games.iterator();
+                Game affectedGame = null;
+                int player = -1;
+                //player should be either 1 or 10 (Constants.CELL_RED or
+                //Constants.CELL_WHITE) depending on what player requested the move.
+                while(it.hasNext()){
+                    affectedGame = it.next();
+                    if(affectedGame.hosterName().equals(conn.clientName)){
+                        player = 1;
+                        break;
+                    }
+                    if(affectedGame.joinerName().equals(conn.clientName)){
+                        player = 10;
+                        break;
+                    }
+                }
+                affectedGame.makeMove(player,positions);
+                String boardMessage = "board "+affectedGame.getStateString();
+                conn.sendReg(boardMessage);
             }else if(token.equals("chat")){
                 token = nextToken(processedReq); processedReq = removeToken(processedReq);
                 //TODO
