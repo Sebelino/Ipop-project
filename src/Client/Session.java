@@ -163,6 +163,8 @@ public class Session {
 	//public String getOpponentName() {
 	//	return oppName;
 	//}
-	
-	
+		
+	public String getOwnName() {
+		return ownName;
+	}
 }
