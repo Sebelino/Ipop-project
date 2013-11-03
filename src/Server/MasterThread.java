@@ -101,10 +101,10 @@ public class MasterThread extends Thread {
                 }
             }else if(tokens[0].equals("move")){
                 //TODO
-                
+                System.err.println("Entering move...");
                 //Check if user is in a game. If not: do nothing.
                 if (conn.isInGame()) {
-                	
+                	System.err.println("conn is in game");
 		            //If yes, parse the parameters to an integer vector.
 		            Vector<Integer> positions = new Vector<Integer>();
 		            int player = -1;
@@ -114,6 +114,7 @@ public class MasterThread extends Thread {
 				        for (int i = 1;i<tokens.length;i++) {
 				        	positions.add(Integer.parseInt(tokens[i]));
 				        }
+				        System.err.println("Passed int parsing");
 				        
 				        if (conn.equals(conn.game.hoster)) {
 				        	player = Constants.CELL_RED;
@@ -125,6 +126,13 @@ public class MasterThread extends Thread {
 				        }
 				        
 				        int res = conn.game.makeMove(player, positions);
+				        System.err.println("Called makeMove with parameters:");
+				        System.err.println("" + player);
+				        for (int i = 0;i<positions.size();i++) {
+				        	System.err.println("" + positions.get(i));
+				        }
+				        
+				        System.err.println("Return value was: " + res);
 				        
 				        if (res == 0) {
 				        	//Success!
@@ -141,6 +149,7 @@ public class MasterThread extends Thread {
 		            } catch (Exception e) {
 		            	//Probably because the arguments were not valid integers.
 		            	//Notify player somehow
+		            	System.err.println("Exception caught in move");
 		            	conn.sendReg("error Illegal command or parameters");
 		            }
 		            

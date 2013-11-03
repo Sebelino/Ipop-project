@@ -46,7 +46,7 @@ public class ServerThread extends Thread {
                 (new InputStreamReader(socket.getInputStream()));
 
             sendReg("entername");
-            printComm("sendReg","entername");
+            //printComm("sendReg","entername");
             while(clientName.isEmpty()){
                 String name = null;
                 try{
@@ -70,7 +70,7 @@ public class ServerThread extends Thread {
                 }
             }
             sendReg("ok"); // ACK the name.
-            printComm("sendReg","ok");
+            //printComm("sendReg","ok");
             boolean requestsExit = false;
             while(!requestsExit){
                 String command = receive();
