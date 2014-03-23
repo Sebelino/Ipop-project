@@ -1,20 +1,10 @@
-Ipop-project
+Internet programming project
 ============
 
-Filer för vårt ipop13-projekt.
+Project files for our project in the course IK2218 (ipop13).
 
-#### Projektförslag
+#### Description
 
-* Minimal IM-klient, som Skype. Kanske stöd för real-time texting.
-* Nätverksdriver.
-* Online-checkers-multiplayer, med stöd för att låta användare hosta/joina en spelserver.
-* Nå't så'nt här ballt: http://www.cs.princeton.edu/courses/archive/spring10/cos598D/LogicProgramming.pdf
-
-##### Programspråk?
-
-* C
-* C++
-* Java
-* Python
-* Go
-* JS/PHP/HTML/CSS/JQuery/AJAX
+The goal of the project was to create a client- and server application for playing Checkers online.
+Features include, but are not limited to, hosting game sessions and chatting.
+We wrote our own application layer protocol, which was slightly inspired by the IRC protocol.
